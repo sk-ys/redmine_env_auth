@@ -17,6 +17,12 @@ module RedmineEnvAuth
       include EnvAuthHelper
 
       def find_current_user_with_envauth
+        if Setting.plugin_redmine_env_auth['allow_other_login'] == 'true'
+          # this allows conventional logins and also makes conventional logins have preference
+          user = find_current_user_without_envauth
+          return user unless user.nil? or user.anonymous?
+        end
+
         #first proceed with redmine's version of finding current user
         user = find_current_user_without_envauth
         #if the env_auth is disabled in config, return the user

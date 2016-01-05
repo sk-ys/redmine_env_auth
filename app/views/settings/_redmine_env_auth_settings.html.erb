@@ -31,3 +31,8 @@
   <%=content_tag(:label, l(:label_menu_entry))%>
   <%=check_box_tag 'settings[menu_entry]', true, @settings['menu_entry'] == "true" %>
 </p>
+
+<p>
+  <%=content_tag(:label, l(:label_allow_other_login))%>
+  <%=check_box_tag 'settings[allow_other_login]', true, @settings['allow_other_login'] == "true" %>
+</p>

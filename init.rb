@@ -20,7 +20,8 @@ Redmine::Plugin.register :redmine_env_auth do
       'lookup_mode' => 'login',
       'auto_registration' => 'false',
       'keep_sessions' => 'false',
-      'menu_entry' => 'false'
+      'menu_entry' => 'false',
+      'allow_other_login' => 'false'
     }
 end
 
