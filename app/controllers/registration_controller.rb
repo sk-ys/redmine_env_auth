@@ -8,18 +8,11 @@ class RegistrationController < ApplicationController
   def autoregistration_form
     @user = User.new :language => Setting.default_language
     set_default_attributes @user
-    logger.info "Hallo Welt"
   end
 
   def register
-    @user = User.new params[:user]
-    @user.login = params[:user][:login] if use_email?
-    set_readonly_attributes @user
-    if @user.save
-      redirect_to home_url
-    else
-      render 'autoregistration_form'
-    end
+    # not implemented, previous version did not work. intended to offer a form to request additional required user information and create a user.
+    # careful when implementing - it should not be possible for any user to be able to create user accounts arbitrarily.
   end
 
   def autoregistration_enabled
@@ -30,9 +23,6 @@ class RegistrationController < ApplicationController
   end
 
   def remote_user_set
-    if remote_user.nil?
-      flash[:error] = l :error_remote_user_unset
-      redirect_to home_url
-    end
+    remote_user.nil?
   end
 end

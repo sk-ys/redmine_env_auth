@@ -43,6 +43,7 @@ module RedmineEnvAuth
       end
 
       def try_login(remote_username)
+        #remote_username is true at this point.
         #find user by login name or email address
         if use_email?
           user = User.active.find_by_mail remote_username

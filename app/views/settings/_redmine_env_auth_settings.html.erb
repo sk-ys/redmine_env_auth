@@ -26,3 +26,8 @@
   <%=content_tag(:label, l(:label_keep_sessions))%>
   <%=check_box_tag 'settings[keep_sessions]', true, @settings['keep_sessions'] == "true" %>
 </p>
+
+<p>
+  <%=content_tag(:label, l(:label_menu_entry))%>
+  <%=check_box_tag 'settings[menu_entry]', true, @settings['menu_entry'] == "true" %>
+</p>

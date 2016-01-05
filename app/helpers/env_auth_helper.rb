@@ -1,6 +1,10 @@
 module EnvAuthHelper
   unloadable
 
+  def envauthselfregister_url
+    envauthselfregister_url = home_url + "envauth-selfregister"
+  end
+
   def user_attributes
     ['login', 'mail', 'firstname', 'lastname']
   end

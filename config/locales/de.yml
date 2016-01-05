@@ -2,6 +2,7 @@
 de:
   label_enable_env_auth: ENV Authentifizierung aktivieren
   label_server_env_var: Name für die Umgebungsvariable des Server
+  label_menu_entry: Menüeintrag
   label_default: Standard
   label_lookup_mode: Lokaler Lookup Modus
   label_login_name: Login Name
