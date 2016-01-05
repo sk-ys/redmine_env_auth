@@ -19,7 +19,7 @@ Installation
 
 Use the following command in your Redmine instance directory:
 
-# ruby script/plugin install http://github.com/AdamLantos/redmine_http_auth.git
+# ruby script/plugin install http://github.com/AdamLantos/redmine_env_auth.git
 
 
 Settings
@@ -47,7 +47,7 @@ app/controllers/application.rb to app/controllers/application_controller.rb.
 Automatic registration of user accounts
 =======
 
-If a user doesn't exist in the redmine local database, the http_authentication
+If a user doesn't exist in the redmine local database, the env_authentication
 plugin can automatically create an account for them. This automatic registration
 currently presents a form to the user where additional attributes (like email
 address, first name or last name) should be entered.
@@ -67,7 +67,7 @@ When using container managed authentication (like SSO systems), one needs to
 ensure, that the currently logged-on user is the same which initiated the session.
 Additionally, there is a need to offer logout functionality to the end user.
 
-By default, the http_authentication plugin synchronizes the container managed
+By default, the env_authentication plugin synchronizes the container managed
 authentication session to the redmine session. This means that if the underlying
 session changes or ends, the redmine session changes and ends as well.
 
@@ -75,9 +75,9 @@ session changes or ends, the redmine session changes and ends as well.
 Using lazy authentication
 =======
 
-The http_authentication plugin provides a top menu link for lazy, user-requested
-authentication purposes. This link points to the `/httpauth-login` URL. If you
-want to enable both http_authentication and normal form-based logins, you need
+The env_authentication plugin provides a top menu link for lazy, user-requested
+authentication purposes. This link points to the `/envauth-login` URL. If you
+want to enable both env_authentication and normal form-based logins, you need
 to use this link to enforce container authentication.
 
 However, many authentication mechanisms (namely apache httpd mod_auth_basic)

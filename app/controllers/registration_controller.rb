@@ -1,8 +1,8 @@
 class RegistrationController < ApplicationController
   unloadable
   skip_before_filter :user_setup, :check_if_login_required
-  include HttpAuthHelper
-  helper :http_auth
+  include EnvAuthHelper
+  helper :env_auth
   before_filter :autoregistration_enabled, :remote_user_set
 
   def autoregistration_form
@@ -23,8 +23,7 @@ class RegistrationController < ApplicationController
   end
 
   def autoregistration_enabled
-    unless Setting.plugin_redmine_http_auth['auto_registration'] == "true"
-
+    unless Setting.plugin_redmine_env_auth['auto_registration'] == "true"
       flash[:error] = l :error_autoregistration_disabled
       redirect_to home_url
     end

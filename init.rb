@@ -1,18 +1,19 @@
 require 'redmine'
 
-Rails.logger.info 'Starting Redmine Http Auth plugin for RedMine'
- 
-Redmine::Plugin.register :redmine_http_auth do
-  name 'HTTP Authentication plugin'
-  author 'Adam Lantos'
-  url 'http://github.com/AdamLantos/redmine_http_auth' if respond_to?(:url)
-  description 'A plugin for doing HTTP authentication'
-  version '0.3.0-dev-redmine-2.x'
-  menu :account_menu, :login_httpauth, "/httpauth-login", 
-    :before => :login, :caption => :login_httpauth_title, 
-    :if => Proc.new { User.current.anonymous? && Setting.plugin_redmine_http_auth['enable'] == 'true' }
+Rails.logger.info 'Starting Redmine Env Auth plugin for RedMine'
 
-  settings :partial => 'settings/redmine_http_auth_settings',
+Redmine::Plugin.register :redmine_env_auth do
+  name 'Environment Authentication plugin'
+  author 'Adam Lantos'
+  author_url 'http://github.com/intera/redmine_env_auth' if respond_to?(:author_url)
+  url 'http://github.com/AdamLantos/redmine_http_auth' if respond_to?(:url)
+  description 'A plugin for doing authentication based on the process environment'
+  version '0.3.1'
+  menu :account_menu, :login_envauth, "/envauth-login",
+    :before => :login, :caption => :login_envauth_title,
+    :if => Proc.new { User.current.anonymous? && Setting.plugin_redmine_env_auth['enable'] == 'true' }
+
+  settings :partial => 'settings/redmine_env_auth_settings',
     :default => {
       'enable' => 'true',
       'server_env_var' => 'REMOTE_USER',
@@ -24,12 +25,11 @@ end
 
 #Dispatcher.to_prepare do
 #  #include our code
-#  ApplicationController.send(:include, HTTPAuthPatch)
+#  ApplicationController.send(:include, ENVAuthPatch)
 #end
 
 RedmineApp::Application.config.after_initialize do
-  unless ApplicationController.include? (RedmineHttpAuth::HTTPAuthPatch)
-    ApplicationController.send(:include, RedmineHttpAuth::HTTPAuthPatch)
+  unless ApplicationController.include? (RedmineEnvAuth::ENVAuthPatch)
+    ApplicationController.send(:include, RedmineEnvAuth::ENVAuthPatch)
   end
 end
-
