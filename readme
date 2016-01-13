@@ -5,6 +5,8 @@ extended version
 * renamed plugin
 
 this plugin allows automatic login by a value in the request environment, custom named, for example named REQUEST_USER. this can be used for login with ntlm (kerberos) when authentication is handled by another server that sets a request environment variable (for example mod_auth_kerberos).
+
+this version includes most fixes that were found in forks up to now. the autoregistration feature has been deactivated because it did not seem to work.
 ----
 
 HTTP Authentication plugin for Redmine
