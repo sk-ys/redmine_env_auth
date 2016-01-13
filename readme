@@ -3,6 +3,8 @@ extended version
 * hide "sign out" when autologin is active
 * add option that allows conventional redmine logins
 * renamed plugin
+
+this plugin allows automatic login by a value in the request environment, custom named, for example named REQUEST_USER. this can be used for login with ntlm (kerberos) when authentication is handled by another server that sets a request environment variable (for example mod_auth_kerberos).
 ----
 
 HTTP Authentication plugin for Redmine
