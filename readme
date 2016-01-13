@@ -1,3 +1,10 @@
+extended version
+* add a new setting to hide the menu entry
+* hide "sign out" when autologin is active
+* add option that allows conventional redmine logins
+* renamed plugin
+----
+
 HTTP Authentication plugin for Redmine
 =======
 
