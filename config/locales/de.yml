@@ -14,3 +14,4 @@ de:
   error_remote_user_unset: Benutzername wurde nicht angegeben
   error_unknown_user: Benutzer konnte nicht gefunden werden
   label_keep_sessions: Verbindung aufrecht erhalten nachdem die ENV Authentifizierung abgelaufen ist (sicherheitskritisch und nicht empfohlen!)
+  label_ldap_checked_auto_registration: automatische registrierung mit ldap-abgleich

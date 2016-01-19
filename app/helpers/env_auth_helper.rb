@@ -43,6 +43,7 @@ module EnvAuthHelper
   end
 
   private
+
   def remote_user_attribute?(attribute_name)
     (attribute_name == "login" && !use_email?) || (attribute_name == "mail" && use_email?)
   end
@@ -59,5 +60,4 @@ module EnvAuthHelper
       end
     end
   end
-
 end

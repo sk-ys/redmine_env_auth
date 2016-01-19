@@ -15,3 +15,4 @@ en:
   error_remote_user_unset: Username is not provided
   error_unknown_user: User was not found in the database
   label_keep_sessions: Keep redmine sessions open after ENV authentication lost (dangerous!)
+  label_ldap_checked_auto_registration: ldap checked automatic registration
