@@ -89,10 +89,8 @@ module RedmineEnvAuth
 
       def do_login(user)
         if (user && user.is_a?(User))
-          session[:user_id] = user.id
+          start_user_session(user)
           session[:env_authentication] = true
-          session[:ctime] = Time.now.utc.to_i
-          session[:atime] = Time.now.utc.to_i
           user.update_attribute(:last_login_on, Time.now)
           User.current = user
         else
