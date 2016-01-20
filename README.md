@@ -34,7 +34,7 @@ Installation
 
 Use the following command in your Redmine instance directory:
 
-# ruby script/plugin install `https://github.com/milinnovations/redmine_env_auth.git`
+    ruby script/plugin install `https://github.com/milinnovations/redmine_env_auth.git`
 
 
 Settings
