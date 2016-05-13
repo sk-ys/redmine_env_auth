@@ -9,7 +9,7 @@ Redmine::Plugin.register :redmine_env_auth do
   url 'http://github.com/intera/redmine_env_auth' if respond_to?(:url)
   description 'a plugin for doing authentication based on the request environment'
   version '0.3.1'
-  menu :account_menu, :login_envauth, "/envauth-login",
+  menu :account_menu, :login_envauth, "./envauth-login",
     :before => :login, :caption => :login_envauth_title,
     :if => Proc.new {
     User.current.anonymous? && Setting.plugin_redmine_env_auth['enable'] == 'true' && Setting.plugin_redmine_env_auth['menu_entry'] == 'true' }
