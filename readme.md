@@ -28,7 +28,7 @@ if the file system permissions are right, the plugin should now be installed. go
 |menu entry|false|enable menu entry for manual login|
 |allow other login|false|this allows conventional logins and also makes conventional logins have preference|
 |automatic registration via ldap|false|if a local redmine user does not exist, look it up in ldap and, if found, automatically register the user in redmine|
-|keep login sessions without env authentication or when env authentication is lost|false|can be used to disable env authentication for some urls with the web server config|
+|keep login sessions without env authentication or when env authentication is lost|false|one use case for this is to disable authentication in the web server for some urls|
 
 # copyright and license
 originally created by adam lantos as [redmine_http_auth](https://github.com/AdamLantos/redmine_http_auth).
