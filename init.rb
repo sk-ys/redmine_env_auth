@@ -3,7 +3,7 @@ require 'redmine'
 Rails.logger.info 'Starting Redmine Env Auth plugin for RedMine'
 
 Redmine::Plugin.register :redmine_env_auth do
-  name 'environment authentication plugin'
+  name 'request environment authentication'
   author 'Adam Lantos'
   author_url 'http://github.com/AdamLantos/redmine_http_auth' if respond_to?(:author_url)
   url 'http://github.com/intera/redmine_env_auth' if respond_to?(:url)
