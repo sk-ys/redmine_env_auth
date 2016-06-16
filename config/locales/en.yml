@@ -1,18 +1,18 @@
-# English strings
+# english strings
 en:
-  label_enable_env_auth: Enable ENV Authentication
-  label_server_env_var: Name of server environment variable
+  label_enable_env_auth: enable env authentication
+  label_server_env_var: name of request environment variable
   label_default: default
   label_menu_entry: menu entry
   label_allow_other_login: allow other login
-  label_lookup_mode: Local user lookup mode
+  label_lookup_mode: user lookup field
   label_login_name: login name
   label_email_address: email address
-  login_envauth_title: Sign in via ENV-Auth
-  label_enable_auto_registration: Automatic registration
-  label_autoregister: Registration
-  error_autoregistration_disabled: Automatic registration is disabled
-  error_remote_user_unset: Username is not provided
-  error_unknown_user: User was not found in the database
-  label_keep_sessions: Keep redmine sessions open after ENV authentication lost (dangerous!)
-  label_ldap_checked_auto_registration: ldap checked automatic registration
+  login_envauth_title: sign in via env-auth
+  label_enable_auto_registration: automatic registration
+  label_autoregister: registration
+  error_autoregistration_disabled: automatic registration is disabled
+  error_remote_user_unset: username is not provided
+  error_unknown_user: user was not found in the database
+  label_keep_sessions: keep login sessions without env authentication or when env authentication is lost
+  label_ldap_checked_auto_registration: automatic registration via ldap
