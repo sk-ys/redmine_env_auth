@@ -23,14 +23,16 @@ if the file system permissions are right, the plugin should now be installed. go
 |name|default|description|
 |----|-------|-----------|
 |enable env authentication|true|enable or disable the plugin|
-|name of request environment variable|REMOTE_USER|name of the request environment variable that may be set to a username when a user visits the site|
-|user lookup field|login|match users by login name or alternatively email address from the request environment variable|
+|name of request environment variable|REMOTE_USER|may be set to a user name or email address|
+|user lookup field|login|match local redmine users by login name or alternatively email address|
 |menu entry|false|enable menu entry for manual login|
 |allow other login|false|this allows conventional logins and also makes conventional logins have preference|
-|automatic registration via ldap|false|if a username or email given in the request environment variable does not exist, look it up in ldap and automatically register the user if found|
-|keep login sessions without env authentication or when env authentication is lost|false||
+|automatic registration via ldap|false|if a local redmine user does not exist, look it up in ldap and, if found, automatically register the user in redmine|
+|keep login sessions without env authentication or when env authentication is lost|false|can be used to disable env authentication for some urls with the web server config|
 
 # copyright and license
 originally created by adam lantos as [redmine_http_auth](https://github.com/AdamLantos/redmine_http_auth).
-    copyright (c) 2010 niif institute and adam lantos, released under the mit license
+
+copyright (c) 2010 niif institute and adam lantos, released under the mit license.
+
 extended by [intera](https://www.intera.de/) (same license).
