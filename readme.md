@@ -1,5 +1,5 @@
 # redmine_env_auth
-this plugin adds an optional authentication method to redmine to authenticate with a variable in the request environment (rails request.env, set by the server or proxy server). this variable can be custom named. one use case is login with single-sign on solutions (SSO) like ntlm/kerberos when a kerberos enabled proxy server (for example mod_auth_kerberos) sets the request environment variable $REMOTE_USER when for logged in users.
+this plugin adds an optional authentication method to redmine to authenticate with a variable in the request environment (rails request.env, set by the server or proxy server). this variable can be custom named. one use case is login with single-sign on solutions (SSO) like ntlm/kerberos when a kerberos enabled proxy server (for example mod_auth_kerberos) sets the request environment variable $REMOTE_USER when a user is logged in.
 
 # features
 * automatically log-in users if a specific request environment variable is set, and log-out if it is unset
