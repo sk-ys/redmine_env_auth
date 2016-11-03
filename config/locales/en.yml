@@ -16,3 +16,6 @@ en:
   error_unknown_user: user was not found in the database
   label_keep_sessions: keep login sessions without env authentication or when env authentication is lost
   label_ldap_checked_auto_registration: automatic registration via ldap
+  label_domain_postfix: Domain postfix
+  label_domain_postfix_help: If the variable REMOTE_USER will contain user.in.my.domen@MYDOMAIN.LOC and you need to use as normal logins username (user.in.my.domen) - set this variable to the value of MYDOMAIN.LOC
+  
