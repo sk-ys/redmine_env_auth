@@ -24,6 +24,7 @@ if the file system permissions are right, the plugin should now be installed. go
 |----|-------|-----------|
 |enable env authentication|true|enable or disable the plugin|
 |name of request environment variable|REMOTE_USER|may be set to a user name or email address|
+|Domain postfix| empty |If your krb5 or something is configured so that variable is returned to the user in the form lastname@DOMAIN.LOCAL in this variable, you must specify the DOMAIN.LOCAL Then users will normally log in on the value of the lastname|
 |user lookup field|login|match local redmine users by login name or alternatively email address|
 |menu entry|false|enable menu entry for manual login|
 |allow other login|false|this allows conventional logins and also makes conventional logins have preference|
