@@ -10,6 +10,12 @@
 </p>
 
 <p>
+  <%=content_tag(:label, l(:label_domain_postfix)) %>
+  <%=text_field_tag 'settings[server_domain_postfix]', @settings['server_domain_postfix'] %><br/>
+  (<%=l(:label_domain_postfix_help)%>)
+</p>
+
+<p>
   <%=content_tag(:label, l(:label_lookup_mode))%>
   <%=radio_button_tag 'settings[lookup_mode]', 'login', @settings['lookup_mode'] == 'login'  %>
   <%=l(:label_login_name)%><br/>
