@@ -18,6 +18,7 @@ module RedmineEnvAuth
       end
       ApplicationController.class_eval do
         include EnvAuthHelper
+
         def find_current_user_with_envauth
           if Setting.plugin_redmine_env_auth["allow_other_login"] == "true"
             # this allows conventional logins and also makes conventional logins have preference
@@ -31,14 +32,14 @@ module RedmineEnvAuth
           return user unless Setting.plugin_redmine_env_auth["enable"] == "true"
 
           remote_username = remote_user
-          
+
           #this code remove domain postfix if is he set
-          tmp_dom_postfix = Setting.plugin_redmine_env_auth['server_domain_postfix']
+          tmp_dom_postfix = Setting.plugin_redmine_env_auth['server_domain_postfix'] || ""
           unless tmp_dom_postfix.empty?
             tmp_dom_postfix = "@"+tmp_dom_postfix
             remote_username.gsub!(tmp_dom_postfix, "")
           end
-          
+
           if remote_username.nil?
             #do not touch user, if he didn't use env authentication to log in
             #or if the keep_sessions configuration directive is set
