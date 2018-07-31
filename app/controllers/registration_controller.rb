@@ -10,6 +10,10 @@ class RegistrationController < ApplicationController
     set_default_attributes @user
   end
 
+  def info
+    render :text => remote_user
+  end
+
   def register
     # not implemented, previous version did not work. intended to offer a form to request additional required user information and create a user.
     # careful when implementing - it should not be possible for any user to be able to create user accounts arbitrarily.

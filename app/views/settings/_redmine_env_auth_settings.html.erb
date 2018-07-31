@@ -1,49 +1,42 @@
 <p>
-  <%=content_tag(:label, l(:label_enable_env_auth))%>
-  <%=check_box_tag 'settings[enable]', true, @settings['enable'] == "true" %>
+  <%= content_tag(:label, l(:label_enable_env_auth))%>
+  <%= check_box_tag "settings[enable]", true, @settings["enable"] == "false" %>
 </p>
 
 <p>
-  <%=content_tag(:label, l(:label_server_env_var)) %>
-  <%=text_field_tag 'settings[server_env_var]', @settings['server_env_var'] %><br/>
-  (<%=l(:label_default)%>: REMOTE_USER)
+  <%= content_tag(:label, l(:label_server_env_var)) %>
+  <%= text_field_tag "settings[server_env_var]", @settings["server_env_var"] %><br/>
+  (<%= l(:label_default)%>: REMOTE_USER)
 </p>
 
 <p>
-  <%=content_tag(:label, l(:label_domain_postfix)) %>
-  <%=text_field_tag 'settings[server_domain_postfix]', @settings['server_domain_postfix'] %><br/>
-  (<%=l(:label_domain_postfix_help)%>)
+  <%= content_tag(:label, l(:label_postfix)) %>
+  <%= text_field_tag "settings[postfix]", @settings["postfix"] %><br/>
+  <%= l(:label_postfix_help)%>
 </p>
 
 <p>
-  <%=content_tag(:label, l(:label_lookup_mode))%>
-  <%=radio_button_tag 'settings[lookup_mode]', 'login', @settings['lookup_mode'] == 'login'  %>
-  <%=l(:label_login_name)%><br/>
-  <%=radio_button_tag 'settings[lookup_mode]', 'mail', @settings['lookup_mode'] == 'mail'  %>
-  <%=l(:label_email_address)%>
-</p>
-
-<!--p>
-  <%=content_tag(:label, l(:label_enable_auto_registration))%>
-  <%=check_box_tag 'settings[auto_registration]', true, @settings['auto_registration'] == "true" %>
-</p-->
-
-<p>
-  <%=content_tag(:label, l(:label_keep_sessions))%>
-  <%=check_box_tag 'settings[keep_sessions]', true, @settings['keep_sessions'] == "true" %>
+  <%= content_tag(:label, l(:label_lookup_mode))%>
+  <%= radio_button_tag "settings[lookup_mode]", "login", @settings["lookup_mode"] == "login" %>
+  <%= l(:label_login_name)%><br/>
+  <%= radio_button_tag "settings[lookup_mode]", "mail", @settings["lookup_mode"] == "mail" %>
+  <%= l(:label_email_address)%>
 </p>
 
 <p>
-  <%=content_tag(:label, l(:label_menu_entry))%>
-  <%=check_box_tag 'settings[login_menu_entry]', true, @settings['login_menu_entry'] == "true" %>
+  <%= content_tag(:label, l(:label_allow_other_login))%>
+  <%= radio_button_tag "settings[allow_other_login]", "all", @settings["allow_other_login"] == "all" %>
+  <%= l(:label_allow_other_login_all)%><br/>
+  <%= radio_button_tag "settings[allow_other_login]", "admins", @settings["allow_other_login"] == "admins" %>
+  <%= l(:label_allow_other_login_admins)%><br/>
+  <%= radio_button_tag "settings[allow_other_login]", "users", @settings["allow_other_login"] == "users" %>
+  <%= l(:label_allow_other_login_users)%><br/>
+  <%= text_field_tag "settings[allow_other_login_users]", @settings["allow_other_login_users"] %><br/>
+  <%= radio_button_tag "settings[allow_other_login]", "none", @settings["allow_other_login"] == "none" %>
+  <%= l(:label_allow_other_login_none)%><br/>
 </p>
 
 <p>
-  <%=content_tag(:label, l(:label_allow_other_login))%>
-  <%=check_box_tag 'settings[allow_other_login]', true, @settings['allow_other_login'] == "true" %>
-</p>
-
-<p>
-  <%=content_tag(:label, l(:label_ldap_checked_auto_registration))%>
-  <%=check_box_tag 'settings[ldap_checked_auto_registration]', true, @settings['ldap_checked_auto_registration'] == "true" %>
+  <%= content_tag(:label, l(:label_ldap_checked_auto_registration))%>
+  <%= check_box_tag "settings[ldap_checked_auto_registration]", true, @settings["ldap_checked_auto_registration"] == "true" %>
 </p>

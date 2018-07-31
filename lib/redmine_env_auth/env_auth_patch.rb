@@ -20,41 +20,35 @@ module RedmineEnvAuth
         include EnvAuthHelper
 
         def find_current_user_with_envauth
-          if Setting.plugin_redmine_env_auth["allow_other_login"] == "true"
-            # this allows conventional logins and also makes conventional logins have preference
+          # first redmine's normal way of finding current user
+          plugin_disabled = Setting.plugin_redmine_env_auth["enable"] != "true"
+          allow_other_login = Setting.plugin_redmine_env_auth["allow_other_login"]
+          if not ["admins", "users", "all", "none"].include?(allow_other_login)
+            allow_other_login = "all"
+          end
+          allow_other_login = false if "none" == allow_other_login
+          if "users" == allow_other_login
+            allow_other_login_users = Setting.plugin_redmine_env_auth["allow_other_login_users"] || ""
+            allow_other_login_users = allow_other_login_users.split(",").map {|a| a.strip }
+          end
+          if plugin_disabled or allow_other_login
             user = find_current_user_without_envauth
-            return user unless user.nil? or user.anonymous?
-          end
-
-          #first proceed with redmine's version of finding current user
-          user = find_current_user_without_envauth
-          #if the env_auth is disabled in config, return the user
-          return user unless Setting.plugin_redmine_env_auth["enable"] == "true"
-
-          remote_username = remote_user
-
-          #this code remove domain postfix if is he set
-          tmp_dom_postfix = Setting.plugin_redmine_env_auth['server_domain_postfix'] || ""
-          unless tmp_dom_postfix.empty?
-            tmp_dom_postfix = "@"+tmp_dom_postfix
-            remote_username.gsub!(tmp_dom_postfix, "")
-          end
-
-          if remote_username.nil?
-            #do not touch user, if he didn't use env authentication to log in
-            #or if the keep_sessions configuration directive is set
-            if !used_env_authentication? || Setting.plugin_redmine_env_auth["keep_sessions"] == "true"
-              return user
+            return user if plugin_disabled
+            if !user.nil?
+              return user if ("all" == allow_other_login)
+              return user if ("admin" == allow_other_login) and user.admin?
+              return user if ("users" == allow_other_login) and allow_other_login.include?(user.name)
             end
-            #log out previously authenticated user
-            reset_session
+          end
+          logger.debug "request_env_auth: trying to log in via environment variable"
+          username = remote_user
+          if !username or username.empty?
+            logger.info "request_env_auth: environment variable is empty"
             return nil
           end
-          #return if the user has not been changed behind the session
-          return user unless session_changed? user, remote_username
-          #log out current logged in user
-          reset_session
-          try_login remote_username
+          logger.debug "request_env_auth: environment variable value is \"#{username}\""
+          return user unless session_changed? user, username
+          try_login username
         end
 
         def register_if_exists_in_ldap login
@@ -71,13 +65,15 @@ module RedmineEnvAuth
           end
         end
 
-        def try_login remote_username
-          #remote_username is true at this point.
-          #find user by login name or email address
+        def try_login username
+          # username is true at this point.
+          # find user by login name or email address
+          postfix = Setting.plugin_redmine_env_auth["server_domain_postfix"] || ""
+          unless postfix.empty? then username = username.chomp postfix end
           if use_email?
-            user = User.active.find_by_mail remote_username
+            user = User.active.find_by_mail username
           else
-            user = User.active.find_by_login remote_username
+            user = User.active.find_by_login username
           end
           if user.nil?
             if Setting.plugin_redmine_env_auth["auto_registration"] == "true"
@@ -93,7 +89,7 @@ module RedmineEnvAuth
               return nil
             end
           else
-            #login and return user if user was found
+            # login and return user if user was found
             do_login user
           end
         end
@@ -106,11 +102,11 @@ module RedmineEnvAuth
           Setting.plugin_redmine_env_auth["lookup_mode"] == "mail"
         end
 
-        def session_changed?(user, remote_username)
+        def session_changed?(user, username)
           if user.nil?
             true
           else
-            use_email? ? user.mail.casecmp(remote_username) != 0 : user.login.casecmp(remote_username) != 0
+            use_email? ? user.mail.casecmp(username) != 0 : user.login.casecmp(username) != 0
           end
         end
 

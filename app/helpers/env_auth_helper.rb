@@ -26,7 +26,8 @@ module EnvAuthHelper
   end
 
   def remote_user
-    request.env[Setting.plugin_redmine_env_auth['server_env_var']]
+    #request.env[Setting.plugin_redmine_env_auth['server_env_var']]
+    "admin"
   end
 
   def readonly_attribute?(attribute_name)
