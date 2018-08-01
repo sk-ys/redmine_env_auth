@@ -31,12 +31,14 @@ move the "redmine_env_auth" directory from the download to your redmine installa
 
 # debugging
 * /env_auth/info displays the current name and value of the environment variable that is configured to be used
-* messages with the debug levels debug, info and error are written into the redmine log {redmine_root}/log/{environment}.log. log levels are set in ``{redmine_root}/config/additional_environment.rb`` (might have to be created), for example with the line ``config.log_level = :debug``
+* messages with the debug levels debug, info and error are written into the redmine log {redmine_root}/log/{environment}.log. log levels are set in ``{redmine_root}/config/additional_environment.rb`` (might have to be created), for example with the line ``config.log_level = :debug``. ``tail -f production.log | grep redmine_env_auth``
+* redmine sessions can be ended by going to /logout and clicking on the button
 
 if you are locked out because the allow other login setting is not set to "all" and the request environment variable isnt set correctly, you might want to reset the plugin settings to be able to log-in with the conventional redmine login. the plugin settings are stored in the database and the sql to delete them is ``delete from settings where name="plugin_redmine_env_auth";``. you might have to restart redmine afterwards
 
 # possible enhancements
 * drop previously created sessions if conventional login disabled
+* all translations except "en" and "de" are out of date
 
 # copyright and license
 originally based on code from adam lantos, [redmine_http_auth](https://github.com/AdamLantos/redmine_http_auth).
