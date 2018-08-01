@@ -1,16 +1,11 @@
 module EnvAuthHelper
-  unloadable
-
-  def envauthselfregister_url
-    envauthselfregister_url = home_url + "envauth-selfregister"
-  end
 
   def user_attributes
-    ['login', 'mail', 'firstname', 'lastname']
+    ["login", "mail", "firstname", "lastname"]
   end
 
   def use_email?
-    Setting.plugin_redmine_env_auth['lookup_mode'] == 'mail'
+    "mail" == Setting.plugin_redmine_env_auth["lookup_mode"]
   end
 
   def set_default_attributes(user)
@@ -26,7 +21,7 @@ module EnvAuthHelper
   end
 
   def remote_user
-    #request.env[Setting.plugin_redmine_env_auth['server_env_var']]
+    #request.env[Setting.plugin_redmine_env_auth["server_env_var"]]
     "admin"
   end
 
@@ -34,7 +29,7 @@ module EnvAuthHelper
     if remote_user_attribute? attribute_name
       true
     else
-      conf = Setting.plugin_redmine_env_auth['readonly_attribute']
+      conf = Setting.plugin_redmine_env_auth["readonly_attribute"]
       if conf.nil? || !conf.has_key?(attribute_name)
         false
       else
@@ -53,7 +48,7 @@ module EnvAuthHelper
     if remote_user_attribute? attribute_name
       remote_user
     else
-      conf = Setting.plugin_redmine_env_auth['attribute_mapping']
+      conf = Setting.plugin_redmine_env_auth["attribute_mapping"]
       if conf.nil? || !conf.has_key?(attribute_name)
         nil
       else

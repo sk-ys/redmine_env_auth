@@ -1,22 +1,17 @@
-# German strings
 de:
-  error_autoregistration_disabled: Automatische Registrierung ist deaktiviert
   error_remote_user_unset: Benutzername wurde nicht angegeben
   error_unknown_user: Benutzer konnte nicht gefunden werden
-  label_enable_env_auth: Plugin aktivieren
-  label_server_env_var: Name der Umgebungsvariable für die Benutzerdaten
-  label_default: Standard
-  label_lookup_mode: Redmine Benutzereigenschaft
-  label_login_name: Loginname
-  label_email_address: Emailaddresse
-  login_envauth_title: Automatisch einloggen
-  label_enable_auto_registration: Automatische Registrierung
-  label_autoregister: Registrierung
-  label_ldap_checked_auto_registration: Automatische Registrierung mit LDAP-Abgleich
-  label_postfix: Postfix
-  label_postfix_help: Der eingetragene Text wird vom Ende des Texts in der Umgebungsvariable abgeschnitten
-  label_allow_other_login: Standardlogin erlauben
   label_allow_other_login_admins: Für alle Administratoren
   label_allow_other_login_all: Für alle Benutzer
-  label_allow_other_login_users: Für bestimmte Benutzer (Kommagetrennt)
   label_allow_other_login_none: Deaktiviert
+  label_allow_other_login: Standardlogin erlauben
+  label_allow_other_login_users: Für bestimmte Benutzer (Kommagetrennt)
+  label_default: Vorgabe
+  label_email_address: E-Mail-Adresse
+  label_enabled: Plugin aktivieren
+  label_env_variable_name: Name der Umgebungsvariable für die Benutzerdaten
+  label_ldap_checked_auto_registration: Automatische Registrierung mit LDAP-Abgleich
+  label_login_name: Loginname
+  label_remove_suffix_help: Der eingetragene Text wird vom Ende des Texts in der Umgebungsvariable abgeschnitten
+  label_remove_suffix: Entferne suffix
+  label_redmine_user_property: Redmine Benutzereigenschaft

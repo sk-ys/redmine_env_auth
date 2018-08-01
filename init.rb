@@ -2,8 +2,7 @@ require "redmine"
 
 Redmine::Plugin.register :redmine_env_auth do
   name "request environment authentication"
-  author "Adam Lantos (original Version); Intera GmbH (Extension)"
-  author_url "http://github.com/AdamLantos/redmine_http_auth" if respond_to?(:author_url)
+  author "Intera GmbH"
   url "http://github.com/intera/redmine_env_auth" if respond_to?(:url)
   description "a plugin for authentication based on variables in the request environment"
   version "0.4"
@@ -19,12 +18,12 @@ Redmine::Plugin.register :redmine_env_auth do
 
   settings :partial => "settings/redmine_env_auth_settings",
     :default => {
-      "enable" => "true",
+      "enabled" => "false",
       "server_env_var" => "REMOTE_USER",
+      "postfix" => "",
       "lookup_mode" => "login",
-      "keep_sessions" => "false",
-      "login_menu_entry" => "false",
-      "allow_other_login" => "false",
+      "allow_other_login" => "admins",
+      "allow_other_login_users" => "",
       "ldap_checked_auto_registration" => "false"
     }
 end

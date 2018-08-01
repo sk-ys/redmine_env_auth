@@ -1,30 +1,30 @@
 <p>
-  <%= content_tag(:label, l(:label_enable_env_auth))%>
-  <%= check_box_tag "settings[enable]", true, @settings["enable"] == "false" %>
+  <%= content_tag(:label, l(:label_enabled))%>
+  <%= check_box_tag "settings[enabled]", true, @settings["enabled"] == "true" %>
 </p>
 
 <p>
-  <%= content_tag(:label, l(:label_server_env_var)) %>
-  <%= text_field_tag "settings[server_env_var]", @settings["server_env_var"] %><br/>
-  (<%= l(:label_default)%>: REMOTE_USER)
+  <%= content_tag(:label, l(:label_env_variable_name)) %>
+  <%= text_field_tag "settings[env_variable_name]", @settings["env_variable_name"] %><br/>
+  <%= l(:label_default)%>: REMOTE_USER
 </p>
 
 <p>
-  <%= content_tag(:label, l(:label_postfix)) %>
-  <%= text_field_tag "settings[postfix]", @settings["postfix"] %><br/>
-  <%= l(:label_postfix_help)%>
+  <%= content_tag(:label, l(:label_remove_suffix)) %>
+  <%= text_field_tag "settings[remove_suffix]", @settings["remove_suffix"] %><br/>
+  <%= l(:label_remove_suffix_help)%>
 </p>
 
 <p>
-  <%= content_tag(:label, l(:label_lookup_mode))%>
-  <%= radio_button_tag "settings[lookup_mode]", "login", @settings["lookup_mode"] == "login" %>
+  <%= content_tag(:label, l(:label_redmine_user_property))%>
+  <%= radio_button_tag "settings[redmine_user_property]", "login", @settings["redmine_user_property"] == "login" %>
   <%= l(:label_login_name)%><br/>
-  <%= radio_button_tag "settings[lookup_mode]", "mail", @settings["lookup_mode"] == "mail" %>
+  <%= radio_button_tag "settings[redmine_user_property]", "mail", @settings["redmine_user_property"] == "mail" %>
   <%= l(:label_email_address)%>
 </p>
 
 <p>
-  <%= content_tag(:label, l(:label_allow_other_login))%>
+  <%= content_tag(:label, (:label_allow_other_login))%>
   <%= radio_button_tag "settings[allow_other_login]", "all", @settings["allow_other_login"] == "all" %>
   <%= l(:label_allow_other_login_all)%><br/>
   <%= radio_button_tag "settings[allow_other_login]", "admins", @settings["allow_other_login"] == "admins" %>
