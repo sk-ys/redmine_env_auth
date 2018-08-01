@@ -1,6 +1,9 @@
 # redmine_env_auth
 this plugin allows to authenticate users using a variable in the request environment (set by the server or proxy server, in rails "request.env"). this variable can be custom named. one use case is login with single sign-on solutions (SSO) like ntlm/kerberos where the server (for example apache with mod_auth_kerberos) sets the request environment variable $REMOTE_USER to a username when a user has been authenticated.
 
+# changelog
+* 2018-08: completely revised, less code, added debugging features
+
 # features
 * automatically log-in users if a specific request environment variable is set, and log-out if it is unset
 * option to allow conventional redmine logins for admins, specific users or everyone
@@ -25,6 +28,10 @@ move the "redmine_env_auth" directory from the download to your redmine installa
 |redmine user property|login|match local redmine users by login name or alternatively email address|
 |allow other login|admins|this allows conventional logins|
 |automatic registration with ldap check|false|if a matching local redmine user can not be found, try to find it in ldap and, if found, automatically create the user in redmine|
+
+# debugging
+* /env_auth/info displays the current name and value of the environment variable that is configured to be used
+* messages with the debug levels debug, info and error are written into the redmine log {redmine_root}/log/{environment}.log
 
 # copyright and license
 originally based on code from adam lantos, [redmine_http_auth](https://github.com/AdamLantos/redmine_http_auth).

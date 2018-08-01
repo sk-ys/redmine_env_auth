@@ -1,6 +1,4 @@
 de:
-  error_remote_user_unset: Benutzername wurde nicht angegeben
-  error_unknown_user: Benutzer konnte nicht gefunden werden
   label_allow_other_login_admins: Für alle Administratoren
   label_allow_other_login_all: Für alle Benutzer
   label_allow_other_login_none: Deaktiviert
@@ -8,7 +6,7 @@ de:
   label_allow_other_login_users: Für bestimmte Benutzer (Kommagetrennt)
   label_default: Vorgabe
   label_email_address: E-Mail-Adresse
-  label_enabled: Plugin aktivieren
+  label_enabled: Plugin verwenden
   label_env_variable_name: Name der Umgebungsvariable für die Benutzerdaten
   label_ldap_checked_auto_registration: Automatische Registrierung mit LDAP-Abgleich
   label_login_name: Loginname

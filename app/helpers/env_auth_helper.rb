@@ -1,59 +1,9 @@
 module EnvAuthHelper
-
-  def user_attributes
-    ["login", "mail", "firstname", "lastname"]
-  end
-
-  def use_email?
-    "mail" == Setting.plugin_redmine_env_auth["lookup_mode"]
-  end
-
-  def set_default_attributes(user)
-    user_attributes.each do |attr|
-      user.send(attr + "=", (get_attribute_value attr))
-    end
-  end
-
-  def set_readonly_attributes(user)
-    user_attributes.each do |attr|
-      user.send(attr + "=", (get_attribute_value attr)) if readonly_attribute? attr
-    end
-  end
-
   def remote_user
-    #request.env[Setting.plugin_redmine_env_auth["server_env_var"]]
-    "admin"
-  end
-
-  def readonly_attribute?(attribute_name)
-    if remote_user_attribute? attribute_name
-      true
-    else
-      conf = Setting.plugin_redmine_env_auth["readonly_attribute"]
-      if conf.nil? || !conf.has_key?(attribute_name)
-        false
-      else
-        conf[attribute_name] == "true"
-      end
-    end
-  end
-
-  private
-
-  def remote_user_attribute?(attribute_name)
-    (attribute_name == "login" && !use_email?) || (attribute_name == "mail" && use_email?)
-  end
-
-  def get_attribute_value(attribute_name)
-    if remote_user_attribute? attribute_name
-      remote_user
-    else
-      conf = Setting.plugin_redmine_env_auth["attribute_mapping"]
-      if conf.nil? || !conf.has_key?(attribute_name)
-        nil
-      else
-        request.env[conf[attribute_name]]
-      end
-    end
+    request.env["REMOTE_USER"] = "adminx"
+    key = request.env[Setting.plugin_redmine_env_auth["env_variable_name"]]
+    suffix = Setting.plugin_redmine_env_auth["remove_suffix"]
+    unless suffix.empty? then key = key.chomp suffix end
+    key
   end
 end

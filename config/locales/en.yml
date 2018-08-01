@@ -1,6 +1,4 @@
 en:
-  error_remote_user_unset: username is not provided
-  error_unknown_user: user was not found in the database
   label_allow_other_login_admins: all admininstrators
   label_allow_other_login_all: all users
   label_allow_other_login: allow standard login
@@ -8,7 +6,7 @@ en:
   label_allow_other_login_users: some users (comma separated)
   label_default: default
   label_email_address: email address
-  label_enabled: activate plugin
+  label_enabled: enable
   label_env_variable_name: name of request environment variable
   label_ldap_checked_auto_registration: automatic registration with ldap check
   label_login_name: login name

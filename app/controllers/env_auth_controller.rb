@@ -4,6 +4,7 @@ class EnvAuthController < ApplicationController
   helper :env_auth
 
   def info
-    render :text => remote_user
+    name = Setting.plugin_redmine_env_auth["env_variable_name"]
+    render :text => "variable name: #{name}<br/>value: #{remote_user.inspect}"
   end
 end
