@@ -78,6 +78,7 @@ module RedmineEnvAuth
         end
 
         ApplicationController.class_eval do
+          # register find_current_user_with/without_envauth
           alias_method_chain :find_current_user, :envauth
         end
       end
@@ -85,7 +86,7 @@ module RedmineEnvAuth
         def get_attrs_for_env_auth login
           return nil if login.blank?
           with_timeout do
-            # password is irrelevant because there is no authentication.
+            # password is irrelevant because there is no authentication
             attrs = get_user_dn login, ""
             if attrs && attrs[:dn]
               return attrs.except :dn

@@ -24,11 +24,11 @@
 </p>
 
 <p>
-  <%= content_tag(:label, (:label_allow_other_login))%>
-  <%= radio_button_tag "settings[allow_other_login]", "all", @settings["allow_other_login"] == "all" %>
-  <%= l(:label_allow_other_login_all)%><br/>
+  <%= content_tag(:label, l(:label_allow_other_login))%>
   <%= radio_button_tag "settings[allow_other_login]", "admins", @settings["allow_other_login"] == "admins" %>
   <%= l(:label_allow_other_login_admins)%><br/>
+  <%= radio_button_tag "settings[allow_other_login]", "all", @settings["allow_other_login"] == "all" %>
+  <%= l(:label_allow_other_login_all)%><br/>
   <%= radio_button_tag "settings[allow_other_login]", "users", @settings["allow_other_login"] == "users" %>
   <%= l(:label_allow_other_login_users)%><br/>
   <%= text_field_tag "settings[allow_other_login_users]", @settings["allow_other_login_users"] %><br/>
