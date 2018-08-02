@@ -4,8 +4,10 @@ module RedmineEnvAuth
       ApplicationController.class_eval do
         include EnvAuthHelper
 
-        def find_current_user_other_login
-          # -> false/user
+        def allow_other_login? user
+          # User -> boolean
+          # this checks if an existing session is allowed. redmine sessions can currently also
+          # be started using the standard sign-in form.
           allow_other_login = Setting.plugin_redmine_env_auth["allow_other_login"]
           if not ["admins", "users", "all", "none"].include? allow_other_login
             allow_other_login = "all"
@@ -16,23 +18,18 @@ module RedmineEnvAuth
             allow_other_login_users = allow_other_login_users.split(",").map {|a| a.strip }
           end
           if allow_other_login
-            user = find_current_user_without_envauth
-            if user and user.is_a? User
-              return user if ("all" == allow_other_login)
-              return user if ("admins" == allow_other_login) and user.admin?
-              return user if ("users" == allow_other_login) and allow_other_login_users.include?(user.login)
-              false
-            else
-              user
-            end
+            return true if ("all" == allow_other_login)
+            return true if ("admins" == allow_other_login) and user.admin?
+            return true if ("users" == allow_other_login) and allow_other_login_users.include?(user.login)
           end
+          false
         end
 
         def find_current_user_with_envauth
           plugin_disabled = Setting.plugin_redmine_env_auth["enabled"] != "true"
           if plugin_disabled then return find_current_user_without_envauth end
-          user = find_current_user_other_login
-          if user then
+          user = find_current_user_without_envauth
+          if user and allow_other_login? user then
             logger.debug "redmine_env_auth: continuing active session for #{user.name}"
             return user
           end
@@ -44,6 +41,15 @@ module RedmineEnvAuth
           end
           logger.debug "redmine_env_auth: environment variable value is \"#{key}\""
           property = Setting.plugin_redmine_env_auth["redmine_user_property"]
+          if user
+            # existing session, check if user property matches current value of environment variable
+            if "mail" == property
+              return user if key == user.mail
+            else
+              return user if key == user.login
+            end
+            reset_session
+          end
           if "mail" == property
             user = User.active.find_by_mail key
           else

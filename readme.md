@@ -29,6 +29,17 @@ move the "redmine_env_auth" directory from the download to your redmine installa
 |allow other login|admins|this allows conventional logins|
 |automatic registration with ldap check|false|if a matching local redmine user can not be found, try to find it in ldap and, if found, automatically create the user in redmine|
 
+## redmine behind proxy
+if redmine is run with separate http server and another server first receives and proxies incoming requests, then the cgi environment will not be available to redmine and the authentication variable will not be set. this is the case for example if redmine is run with puma and another server like nginx or apache forwards requests to it. in this case, a http header can be used to transmit the user information. the setting for the env auth variable name must correspond to the header name used. with puma a HTTP_ prefix is added, with the following example config it would be ``HTTP_X_REMOTE_USER`` instead of the default ``REMOTE_USER``.
+
+apache config example:
+```
+RequestHeader unset X_REMOTE_USER
+RequestHeader set X_REMOTE_USER expr=%{REMOTE_USER}
+```
+
+X_REMOTE_USER is first unset to make sure that it isnt set by the client.
+
 # debugging
 * /env_auth/info displays the current name and value of the environment variable that is configured to be used
 * messages with the debug levels debug, info and error are written into the redmine log {redmine_root}/log/{environment}.log. log levels are set in ``{redmine_root}/config/additional_environment.rb`` (might have to be created), for example with the line ``config.log_level = :debug``. ``tail -f production.log | grep redmine_env_auth``
@@ -37,7 +48,6 @@ move the "redmine_env_auth" directory from the download to your redmine installa
 if you are locked out because the allow other login setting is not set to "all" and the request environment variable isnt set correctly, you might want to reset the plugin settings to be able to log-in with the conventional redmine login. the plugin settings are stored in the database and the sql to delete them is ``delete from settings where name="plugin_redmine_env_auth";``. you might have to restart redmine afterwards
 
 # possible enhancements
-* drop previously created sessions if conventional login disabled
 * all translations except "en" and "de" are out of date
 
 # copyright and license
