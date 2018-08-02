@@ -39,6 +39,7 @@ RewriteEngine On
 RewriteCond %{LA-U:REMOTE_USER} (.+)
 RewriteRule .* - [E=RU:%1]
 RequestHeader add X_REMOTE_USER %{RU}e
+```
 
 X_REMOTE_USER is first unset to ensure that it isnt set by some other source like a client or another proxy. the rewrite engine is used to look ahead (wait) on a future state of the variable (after it has been set by the authentication module, LA-U),
 and when it is set (RewriteCond) apply the RewriteRule that doesnt rewrite the url but sets an environment variable RU with the match from the condition.
