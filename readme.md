@@ -35,10 +35,20 @@ if redmine is run with a separate http server and another server first receives 
 apache config example:
 ```
 RequestHeader unset X_REMOTE_USER
+RewriteEngine On
+RewriteCond %{LA-U:REMOTE_USER} (.+)
+RewriteRule .* - [E=RU:%1]
+RequestHeader add X_REMOTE_USER %{RU}e
+
+X_REMOTE_USER is first unset to ensure that it isnt set by some other source like a client or another proxy. the rewrite engine is used to look ahead (wait) on a future state of the variable (after it has been set by the authentication module, LA-U),
+and when it is set (RewriteCond) apply the RewriteRule that doesnt rewrite the url but sets an environment variable RU with the match from the condition.
+this requires the apache modules "headers" and "rewrite".
+
+this other example can be found online, but it doesnt seem to work:
+```
+RequestHeader unset X_REMOTE_USER
 RequestHeader set X_REMOTE_USER expr=%{REMOTE_USER}
 ```
-
-X_REMOTE_USER is first unset to make sure that it isnt set by the client.
 
 # debugging
 * /env_auth/info displays the current name and value of the environment variable that is configured to be used
@@ -49,6 +59,7 @@ if you are locked out because the allow other login setting is not set to "all" 
 
 # possible enhancements
 * all translations except "en" and "de" are out of date
+* tests
 
 # copyright and license
 originally based on code from adam lantos, [redmine_http_auth](https://github.com/AdamLantos/redmine_http_auth).
