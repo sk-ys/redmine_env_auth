@@ -30,7 +30,7 @@ move the "redmine_env_auth" directory from the download to your redmine installa
 |automatic registration with ldap check|false|if a matching local redmine user can not be found, try to find it in ldap and, if found, automatically create the user in redmine|
 
 ## redmine behind proxy
-if redmine is run with separate http server and another server first receives and proxies incoming requests, then the cgi environment will not be available to redmine and the authentication variable will not be set. this is the case for example if redmine is run with puma and another server like nginx or apache forwards requests to it. in this case, a http header can be used to transmit the user information. the setting for the env auth variable name must correspond to the header name used. with puma a HTTP_ prefix is added, with the following example config it would be ``HTTP_X_REMOTE_USER`` instead of the default ``REMOTE_USER``.
+if redmine is run with a separate http server and another server first receives and proxies incoming requests, then the cgi environment will not be available to redmine and the authentication variable will not be set. this is the case for example if redmine is run with puma and another server like nginx or apache forwards requests to it. in this case, a http header can be used to transmit the user information. the setting for the env auth variable name must correspond to the header name used. with puma a HTTP_ prefix is added, with the following example config the variable name would be ``HTTP_X_REMOTE_USER`` instead of the default ``REMOTE_USER``.
 
 apache config example:
 ```
