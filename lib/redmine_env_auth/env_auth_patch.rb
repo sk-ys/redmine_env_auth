@@ -80,6 +80,7 @@ module RedmineEnvAuth
               user.language = Setting.default_language
               if user.save
                 user.reload
+                return user
               else
                 logger.error "redmine_env_auth: user creation after ldap sync failed"
                 nil
