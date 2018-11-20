@@ -32,6 +32,8 @@ move the "redmine_env_auth" directory from the download to your redmine installa
 ## redmine behind proxy
 if redmine is run with a separate http server and another server first receives and proxies incoming requests, then the cgi environment will not be available to redmine and the authentication variable will not be set. this is the case for example if redmine is run with puma and another server like nginx or apache forwards requests to it. in this case, a http header can be used to transmit the user information. the setting for the env auth variable name must correspond to the header name used. with puma a HTTP_ prefix is added, with the following example config the variable name would be ``HTTP_X_REMOTE_USER`` instead of the default ``REMOTE_USER``.
 
+important for security: under no circumstances should this header be forwarded from the client. you need to make sure that it is overwritten with your authentication value or removed if it exists before sending it to the redmine server.
+
 apache config example:
 ```
 RequestHeader unset X_REMOTE_USER
