@@ -1,5 +1,13 @@
 module RedmineEnvAuth
   module EnvAuthPatch
+
+    module PrependMethods
+      def find_current_user
+        find_current_user_with_envauth
+        super
+      end
+    end
+
     def self.install
       ApplicationController.class_eval do
         include EnvAuthHelper
@@ -93,8 +101,13 @@ module RedmineEnvAuth
         end
 
         ApplicationController.class_eval do
-          # register find_current_user_with/without_envauth
-          alias_method_chain :find_current_user, :envauth
+          if self.respond_to?(:alias_method_chain)  # Rails < 5
+            # register find_current_user_with/without_envauth
+            alias_method_chain :find_current_user, :envauth
+          else  # Rails >= 5
+            alias_method :find_current_user_without_envauth, :find_current_user
+            prepend PrependMethods
+          end
         end
       end
       AuthSourceLdap.class_eval do
