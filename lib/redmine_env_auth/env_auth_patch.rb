@@ -51,53 +51,73 @@ module RedmineEnvAuth
           property = Setting.plugin_redmine_env_auth["redmine_user_property"]
           if user
             # existing session, check if user property matches current value of environment variable
+            reuse_session = false
             if "mail" == property
-              return user if key == user.mail
+              reuse_session = key == user.mail
             else
-              return user if key == user.login
+              reuse_session = key == user.login
+            end
+            if reuse_session
+              logger.debug "redmine_env_auth: continuing active session for \"#{user.name}\""
+              return user
             end
             reset_session
           end
+          # try redmine users
           if "mail" == property
             user = User.active.find_by_mail key
           else
             user = User.active.find_by_login key
           end
-          auto = "true" == Setting.plugin_redmine_env_auth["ldap_checked_auto_registration"]
-          if (not user) and auto then user = register_if_exists_in_ldap key end
+          # try ldap users and auto registration
+          if not user
+            auto = "true" == Setting.plugin_redmine_env_auth["ldap_checked_auto_registration"]
+            if auto then user = register_if_exists_in_ldap key end
+          end
+          # start session or return nil
           if user and user.is_a? User
             logger.debug "redmine_env_auth: user found, start session"
             start_user_session user
-            user.update_attribute(:last_login_on, Time.now)
+            user.update_attribute :last_login_on, Time.now
             User.current = user
           else
             logger.debug "redmine_env_auth: redmine user #{key} not found using property #{property}"
-            return nil
+            nil
           end
         end
 
-        def register_if_exists_in_ldap user_name
+        def register_if_exists_in_ldap login
           # search all ldap sources for a user with the given name and if found,
           # create a user with that name in redmine.
-          auth_sources = AuthSource.where :type => "AuthSourceLdap", :onthefly_register => true
-          auth_sources.each do |auth_source|
-            attrs = auth_source.get_attrs_for_env_auth user_name
-            if attrs
-              user = User.new attrs
-              user.login = user_name
-              user.language = Setting.default_language
-              if user.save
-                user.reload
-                return user
-              else
-                logger.error "redmine_env_auth: user creation after ldap sync failed"
-                nil
-              end
+          auth_sources = AuthSource.where :type => "AuthSourceLdap"
+          if 0 == auth_sources.count
+            logger.debug "redmine_env_auth: no ldap source found"
+            return
+          end
+          # attributes that redmine requires for creating a user
+          required_attrs = [:firstname, :lastname, :mail]
+          auth_sources.find do |auth_source|
+            users = auth_source.search login
+            next if 0 == users.length
+            ldap_user = users.first
+            next if login != ldap_user[:login]
+            missing_attrs = required_attrs - ldap_user.keys
+            if 0 < missing_attrs.length
+              logger.debug "redmine_env_auth: missing attributes #{missing_attrs} from ldap, cant create user"
+              next
+            end
+            user = User.new ldap_user.slice(:login, :firstname, :lastname, :mail)
+            if user.save
+              user.reload
+              logger.debug "redmine_env_auth: user creation after ldap sync successful"
+              return user
             else
-              logger.debug "redmine_env_auth: no user found via ldap"
-              nil
+              logger.error "redmine_env_auth: user creation after ldap sync failed"
+              return
             end
           end
+          logger.debug "redmine_env_auth: no user found via ldap"
+          nil
         end
 
         ApplicationController.class_eval do
@@ -108,20 +128,6 @@ module RedmineEnvAuth
             alias_method :find_current_user_without_envauth, :find_current_user
             prepend PrependMethods
           end
-        end
-      end
-      AuthSourceLdap.class_eval do
-        def get_attrs_for_env_auth login
-          return nil if login.blank?
-          with_timeout do
-            # password is irrelevant because there is no authentication
-            attrs = get_user_dn login, ""
-            if attrs && attrs[:dn]
-              return attrs.except :dn
-            end
-          end
-        rescue Net::LDAP::LdapError => e
-          raise AuthSourceException.new e.message
         end
       end
     end
