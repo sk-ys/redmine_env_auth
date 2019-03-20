@@ -44,7 +44,8 @@ module RedmineEnvAuth
           logger.debug "redmine_env_auth: trying to log in using environment variable"
           key = remote_user
           if !key or key.empty?
-            logger.info "redmine_env_auth: environment variable is unset"
+            logger.info "redmine_env_auth: environment variable is unset. logging out any existing users"
+            reset_session if user
             return nil
           end
           logger.debug "redmine_env_auth: environment variable value is \"#{key}\""
