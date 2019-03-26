@@ -38,13 +38,19 @@ module RedmineEnvAuth
           if plugin_disabled then return find_current_user_without_envauth end
           user = find_current_user_without_envauth
           if user and allow_other_login? user then
-            logger.debug "redmine_env_auth: continuing active session for #{user.name}"
-            return user
+            if "login" == request.env["action_controller.instance"].action_name
+              logger.debug "redmine_env_auth: ignoring active session and showing login form"
+              reset_session
+              return nil
+            else
+              logger.debug "redmine_env_auth: continuing active session for #{user.login}"
+              return user
+            end
           end
           logger.debug "redmine_env_auth: trying to log in using environment variable"
           key = remote_user
           if !key or key.empty?
-            logger.info "redmine_env_auth: environment variable is unset. logging out any existing users"
+            logger.info "redmine_env_auth: environment variable is unset. logging out any existing users. only allowed users can use standard login"
             reset_session if user
             return nil
           end
@@ -59,7 +65,7 @@ module RedmineEnvAuth
               reuse_session = key == user.login
             end
             if reuse_session
-              logger.debug "redmine_env_auth: continuing active session for \"#{user.name}\""
+              logger.debug "redmine_env_auth: continuing active session for \"#{user.login}\""
               return user
             end
             reset_session
