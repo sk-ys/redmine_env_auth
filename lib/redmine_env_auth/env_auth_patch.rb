@@ -113,7 +113,11 @@ module RedmineEnvAuth
               logger.debug "redmine_env_auth: missing attributes #{missing_attrs} from ldap, cant create user"
               next
             end
-            user = User.new ldap_user.slice(:login, :firstname, :lastname, :mail)
+            user = User.new ldap_user.slice(:firstname, :lastname, :mail)
+            user.login = ldap_user[:login]
+            # registered users will be able to log in using ldap if redmine_env_auth is disabled.
+            # an alternative would be to not set auth_source_id, users without password can not log in.
+            user.auth_source_id = auth_source.id
             if user.save
               user.reload
               logger.debug "redmine_env_auth: user creation after ldap sync successful"
