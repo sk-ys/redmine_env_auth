@@ -10,7 +10,17 @@ module RedmineEnvAuth
 
     def self.install
       ApplicationController.class_eval do
-        include EnvAuthHelper
+        def remote_user
+          #request.env["HTTP_X_REMOTE_USER"] = ""
+          key = request.env[Setting.plugin_redmine_env_auth["env_variable_name"]]
+          return nil unless key
+          suffix = Setting.plugin_redmine_env_auth["remove_suffix"]
+          if suffix.is_a?(String) and not suffix.empty?
+            key.chomp suffix
+          else
+            key
+          end
+        end
 
         def allow_other_login? user
           # User -> boolean
@@ -131,14 +141,12 @@ module RedmineEnvAuth
           nil
         end
 
-        ApplicationController.class_eval do
-          if self.respond_to?(:alias_method_chain)  # Rails < 5
-            # register find_current_user_with/without_envauth
-            alias_method_chain :find_current_user, :envauth
-          else  # Rails >= 5
-            alias_method :find_current_user_without_envauth, :find_current_user
-            prepend PrependMethods
-          end
+        if self.respond_to?(:alias_method_chain) # Rails < 5
+          # register find_current_user_with/without_envauth
+          alias_method_chain :find_current_user, :envauth
+        else # Rails >= 5
+          alias_method :find_current_user_without_envauth, :find_current_user
+          prepend PrependMethods
         end
       end
     end

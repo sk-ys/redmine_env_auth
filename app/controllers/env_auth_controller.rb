@@ -1,5 +1,4 @@
 class EnvAuthController < ApplicationController
-  helper EnvAuthHelper
   def info
     effective = remote_user
     variable_name = Setting.plugin_redmine_env_auth["env_variable_name"]
