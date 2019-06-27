@@ -9,7 +9,7 @@ this plugin allows to authenticate users using a variable in the request environ
 * option to allow conventional redmine logins for admins, specific users or everyone
 * option to register users automatically if they are found using ldap
 * "sign out" link hidden when autologin is active
-* compatible with redmine 3
+* compatible with redmine 4
 
 # installation
 ## download
@@ -26,15 +26,15 @@ move the "redmine_env_auth" directory from the download to your redmine installa
 |name of request environment variable|REMOTE_USER||
 |remove suffix||the given text will be removed from the end of the text in the environment variable|
 |redmine user property|login|match local redmine users by login name or alternatively email address|
-|allow other login|admins|this allows conventional logins|
-|automatic registration with ldap check|false|if a matching local redmine user can not be found, try to find it in ldap and, if found, automatically create the user in redmine|
+|allow other login|admins|this allows conventional logins. users must be allowed to see the login form|
+|automatic registration with ldap check|false|if a matching local redmine user can not be found, try to find it in ldap and, if found, automatically create the user in redmine. the user will be linked with the ldap as the authentication source|
 
 ## redmine behind proxy
 if redmine is run with a separate http server and another server first receives and proxies incoming requests, then the cgi environment will not be available to redmine and the authentication variable will not be set. this is the case for example if redmine is run with puma and another server like nginx or apache forwards requests to it. in this case, a http header can be used to transmit the user information. the setting for the env auth variable name must correspond to the header name used. with puma a HTTP_ prefix is added, with the following example config the variable name would be ``HTTP_X_REMOTE_USER`` instead of the default ``REMOTE_USER``.
 
 important for security: under no circumstances should this header be forwarded from the client. you need to make sure that it is overwritten with your authentication value or removed if it exists before sending it to the redmine server.
 
-apache config example:
+apache 2.4 config example:
 ```
 RequestHeader unset X_REMOTE_USER
 RewriteEngine On
