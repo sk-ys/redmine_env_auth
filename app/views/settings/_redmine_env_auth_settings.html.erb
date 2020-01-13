@@ -42,6 +42,6 @@
 </p>
 
 <p>
-  <%= content_tag(:label, l(:label_use_cookie_variable))%>
+  <%= content_tag(:label, l(:label_use_cookie_variable) + "[Dangerous!]")%>
   <%= check_box_tag "settings[use_cookie_variable]", true, @settings["use_cookie_variable"] == "true" %>
 </p>
