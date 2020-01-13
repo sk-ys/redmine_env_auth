@@ -24,7 +24,8 @@ Redmine::Plugin.register :redmine_env_auth do
       "env_variable_name" => "REMOTE_USER",
       "ldap_checked_auto_registration" => "false",
       "redmine_user_property" => "login",
-      "remove_suffix" => ""
+      "remove_suffix" => "",
+      "use_cookie_variable" => "false"
     }
 end
 

@@ -58,9 +58,11 @@ module RedmineEnvAuth
               return user
             end
           end
-          logger.debug "redmine_env_auth: trying to log in using cookie variable"
-          key = cookies.signed[:user_id]
-          logger.info "redmine_env_auth: value from cookie is \"#{key}\""
+          if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
+            logger.debug "redmine_env_auth: trying to log in using cookie variable"
+            key = cookies.signed[:user_id]
+            logger.info "redmine_env_auth: value from cookie is \"#{key}\""
+          end
           if !key or key.empty?
             logger.debug "redmine_env_auth: trying to log in using environment variable"
             key = remote_user
@@ -150,12 +152,14 @@ module RedmineEnvAuth
         end
 
         def update_cookie(key)
-          cookies.signed[:user_id] = {
-            :value => key,
-            :expires => 1.week.from_now,
-            :path => '/',
-            :httponly => true
-          }
+          if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
+            cookies.signed[:user_id] = {
+              :value => key,
+              :expires => 1.week.from_now,
+              :path => '/',
+              :httponly => true
+            }
+          end
         end
 
         if self.respond_to?(:alias_method_chain) # Rails < 5
@@ -180,7 +184,9 @@ module RedmineEnvAuth
     def self.install
       AccountController.class_eval do
         def logout_with_envauth
-          cookies.delete :user_id, path: '/'
+          if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
+            cookies.delete :user_id, path: '/'
+          end
         end
 
         if self.respond_to?(:alias_method_chain) # Rails < 5

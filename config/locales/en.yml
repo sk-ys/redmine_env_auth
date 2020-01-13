@@ -13,3 +13,4 @@ en:
   label_remove_suffix_help: the given text will be removed from the end of the text in the environment variable
   label_remove_suffix: remove suffix
   label_redmine_user_property: redmine user property
+  label_use_cookie_variable:  get login name from cookie (test)

@@ -13,3 +13,4 @@ ja:
   error_remote_user_unset: ユーザ名が設定されていません
   error_unknown_user: データベースに該当するユーザが存在しません
   label_keep_sessions: ENV認証が切れたあともRedmineのセッションを継続させる (危険です!)
+  label_use_cookie_variable: クッキーからログイン名を取得する（テスト）
