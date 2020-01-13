@@ -54,15 +54,21 @@ module RedmineEnvAuth
               return nil
             else
               logger.debug "redmine_env_auth: continuing active session for #{user.login}"
+              update_cookie user.login
               return user
             end
           end
-          logger.debug "redmine_env_auth: trying to log in using environment variable"
-          key = remote_user
+          logger.debug "redmine_env_auth: trying to log in using cookie variable"
+          key = cookies.signed[:user_id]
+          logger.info "redmine_env_auth: value from cookie is \"#{key}\""
           if !key or key.empty?
-            logger.info "redmine_env_auth: environment variable is unset. logging out any existing users. only allowed users can use standard login"
-            reset_session if user
-            return nil
+            logger.debug "redmine_env_auth: trying to log in using environment variable"
+            key = remote_user
+            if !key or key.empty?
+              logger.info "redmine_env_auth: environment variable is unset. logging out any existing users. only allowed users can use standard login"
+              reset_session if user
+              return nil
+            end
           end
           logger.debug "redmine_env_auth: environment variable value is \"#{key}\""
           property = Setting.plugin_redmine_env_auth["redmine_user_property"]
@@ -76,6 +82,7 @@ module RedmineEnvAuth
             end
             if reuse_session
               logger.debug "redmine_env_auth: continuing active session for \"#{user.login}\""
+              update_cookie user.login
               return user
             end
             reset_session
@@ -97,6 +104,7 @@ module RedmineEnvAuth
             start_user_session user
             user.update_attribute :last_login_on, Time.now
             User.current = user
+            update_cookie user.login
           else
             logger.debug "redmine_env_auth: redmine user #{key} not found using property #{property}"
             nil
@@ -141,11 +149,44 @@ module RedmineEnvAuth
           nil
         end
 
+        def update_cookie(key)
+          cookies.signed[:user_id] = {
+            :value => key,
+            :expires => 1.week.from_now,
+            :path => '/',
+            :httponly => true
+          }
+        end
+
         if self.respond_to?(:alias_method_chain) # Rails < 5
           # register find_current_user_with/without_envauth
           alias_method_chain :find_current_user, :envauth
         else # Rails >= 5
           alias_method :find_current_user_without_envauth, :find_current_user
+          prepend PrependMethods
+        end
+      end
+    end
+  end
+
+  module EnvAuthPatch2
+    module PrependMethods
+      def logout
+        logout_with_envauth
+        super
+      end
+    end
+
+    def self.install
+      AccountController.class_eval do
+        def logout_with_envauth
+          cookies.delete :user_id, path: '/'
+        end
+
+        if self.respond_to?(:alias_method_chain) # Rails < 5
+          alias_method_chain :logout, :envauth
+        else # Rails >= 5
+          alias_method :logout_without_envauth, :logout
           prepend PrependMethods
         end
       end

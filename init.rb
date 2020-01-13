@@ -30,4 +30,5 @@ end
 
 Rails.configuration.to_prepare do
   RedmineEnvAuth::EnvAuthPatch.install
+  RedmineEnvAuth::EnvAuthPatch2.install
 end
