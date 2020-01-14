@@ -47,6 +47,15 @@ module RedmineEnvAuth
           plugin_disabled = Setting.plugin_redmine_env_auth["enabled"] != "true"
           if plugin_disabled then return find_current_user_without_envauth end
           user = find_current_user_without_envauth
+          if user and Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
+            # logout if cookie value is unset
+            key = cookies.signed[:user_id]
+            if !key or key.empty?
+              logger.info "redmine_env_auth: cookie not found, logout"
+              reset_session
+              return nil
+            end
+          end
           if user and allow_other_login? user then
             if "login" == request.env["action_controller.instance"].action_name
               logger.debug "redmine_env_auth: ignoring active session and showing login form"
@@ -151,7 +160,7 @@ module RedmineEnvAuth
           nil
         end
 
-        def update_cookie(key)
+        def update_cookie(key)  # TODO: Combine two method into one
           if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
             cookies.signed[:user_id] = {
               :value => key,
@@ -193,6 +202,42 @@ module RedmineEnvAuth
           alias_method_chain :logout, :envauth
         else # Rails >= 5
           alias_method :logout_without_envauth, :logout
+          prepend PrependMethods
+        end
+      end
+    end
+  end
+
+  module EnvAuthPatch3
+
+    module PrependMethods
+      def successful_authentication(user)
+        successful_authentication_with_envauth(user)
+        super(user)
+      end
+    end
+
+    def self.install
+      AccountController.class_eval do
+        def successful_authentication_with_envauth(user)
+          update_cookie(user.login)
+        end
+
+        def update_cookie(key)  # TODO: Combine two method into one
+          if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
+            cookies.signed[:user_id] = {
+              :value => key,
+              :expires => 1.week.from_now,
+              :path => '/',
+              :httponly => true
+            }
+          end
+        end
+
+        if self.respond_to?(:alias_method_chain) # Rails < 5
+          alias_method_chain :successful_authentication, :envauth
+        else # Rails >= 5
+          alias_method :successful_authentication_without_envauth, :successful_authentication
           prepend PrependMethods
         end
       end
