@@ -11,7 +11,9 @@ Redmine::Plugin.register :redmine_env_auth do
     # hide the logout link if an automatic login is active
     menu.delete :logout
     menu.push :logout, :signout_path, :html => {:method => "post"}, :if => Proc.new {
-      env_auth_disabled = Setting.plugin_redmine_env_auth["enabled"] != "true"
+      # env_auth_disabled = Setting.plugin_redmine_env_auth["enabled"] != "true"
+      env_auth_disabled = Setting.plugin_redmine_env_auth["enabled"] != "true" ||
+        (Setting.plugin_redmine_env_auth["enabled"] == "true" && Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true")
       User.current.logged? and env_auth_disabled
     }, :after => :my_account
   end
