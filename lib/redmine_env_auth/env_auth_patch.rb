@@ -1,6 +1,5 @@
 module RedmineEnvAuth
   module EnvAuthPatch
-
     module PrependMethods
       def find_current_user
         find_current_user_with_envauth
@@ -209,7 +208,6 @@ module RedmineEnvAuth
   end
 
   module EnvAuthPatch3
-
     module PrependMethods
       def successful_authentication(user)
         successful_authentication_with_envauth(user)
@@ -238,6 +236,40 @@ module RedmineEnvAuth
           alias_method_chain :successful_authentication, :envauth
         else # Rails >= 5
           alias_method :successful_authentication_without_envauth, :successful_authentication
+          prepend PrependMethods
+        end
+      end
+    end
+  end
+
+  module EnvAuthPatch4
+    module PrependMethods
+      def session_expiration
+        if !session_expired?
+          session_expiration_with_envauth
+        end
+        super
+      end
+    end
+
+    def self.install
+      ApplicationController.class_eval do
+        def session_expiration_with_envauth
+          if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
+            user_id = cookies.signed[:user_id]
+            user = User.active.find_by_id(user_id)
+            if user
+              reset_session
+              start_user_session(user)
+              logger.info "redmine_env_auth: reset session and autologin with cookie by user: #{user.id}"
+            end
+          end
+        end
+
+        if self.respond_to?(:alias_method_chain) # Rails < 5
+          alias_method_chain :session_expiration, :envauth
+        else # Rails >= 5
+          alias_method :session_expiration_without_envauth, :session_expiration
           prepend PrependMethods
         end
       end

@@ -35,4 +35,5 @@ Rails.configuration.to_prepare do
   RedmineEnvAuth::EnvAuthPatch.install
   RedmineEnvAuth::EnvAuthPatch2.install
   RedmineEnvAuth::EnvAuthPatch3.install
+  RedmineEnvAuth::EnvAuthPatch4.install
 end
