@@ -115,6 +115,10 @@ module RedmineEnvAuth
             user.update_attribute :last_login_on, Time.now
             User.current = user
             update_cookie user.login
+            if api_request? && params[:key].blank?
+              user.api_key if user.api_token.nil?
+              params[:key] = user.api_token.value
+            end
           else
             logger.debug "redmine_env_auth: redmine user #{key} not found using property #{property}"
             nil
