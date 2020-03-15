@@ -9,6 +9,8 @@ module RedmineEnvAuth
 
     def self.install
       ApplicationController.class_eval do
+        require 'json'
+
         def remote_user
           #request.env["HTTP_X_REMOTE_USER"] = ""
           key = request.env[Setting.plugin_redmine_env_auth["env_variable_name"]]
@@ -48,7 +50,12 @@ module RedmineEnvAuth
           user = find_current_user_without_envauth
           if user and Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
             # logout if cookie value is unset
-            key = cookies.signed[:user_id]
+            begin
+              user_info = JSON.parse(cookies.signed[:user], symbolize_names: true)
+              key = user_info[:login]
+            rescue
+              key = ''
+            end
             if !key or key.empty?
               logger.info "redmine_env_auth: cookie not found, logout"
               reset_session
@@ -68,7 +75,12 @@ module RedmineEnvAuth
           end
           if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
             logger.debug "redmine_env_auth: trying to log in using cookie variable"
-            key = cookies.signed[:user_id]
+            begin
+              user_info = JSON.parse(cookies.signed[:user], symbolize_names: true)
+              key = user_info[:login]
+            rescue
+              key = ''
+            end
             logger.info "redmine_env_auth: value from cookie is \"#{key}\""
           end
           if !key or key.empty?
@@ -165,8 +177,10 @@ module RedmineEnvAuth
 
         def update_cookie(key)  # TODO: Combine two method into one
           if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
-            cookies.signed[:user_id] = {
-              :value => key,
+            cookies.signed[:user] = {
+              :value => {
+                login: key
+              }.to_json,
               :expires => 1.week.from_now,
               :path => '/',
               :httponly => true
@@ -195,9 +209,18 @@ module RedmineEnvAuth
 
     def self.install
       AccountController.class_eval do
+        require 'json'
+
         def logout_with_envauth
           if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
-            cookies.delete :user_id, path: '/'
+            cookies.signed[:user] = {
+              :value => {
+                login: ''
+              }.to_json,
+              :expires => 1.week.from_now,
+              :path => '/',
+              :httponly => true
+            }
           end
         end
 
@@ -221,14 +244,18 @@ module RedmineEnvAuth
 
     def self.install
       AccountController.class_eval do
+        require 'json'
+
         def successful_authentication_with_envauth(user)
           update_cookie(user.login)
         end
 
         def update_cookie(key)  # TODO: Combine two method into one
           if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
-            cookies.signed[:user_id] = {
-              :value => key,
+            cookies.signed[:user] = {
+              :value => {
+                login: key
+              }.to_json,
               :expires => 1.week.from_now,
               :path => '/',
               :httponly => true
@@ -248,32 +275,38 @@ module RedmineEnvAuth
 
   module EnvAuthPatch4
     module PrependMethods
-      def session_expiration
-        if !session_expired?
-          session_expiration_with_envauth
-        end
+      def try_to_autologin
         super
+        try_to_autologin_with_envauth if (defined? user).nil? || !user
       end
     end
 
     def self.install
       ApplicationController.class_eval do
-        def session_expiration_with_envauth
+        require 'json'
+
+        def try_to_autologin_with_envauth
           if Setting.plugin_redmine_env_auth["use_cookie_variable"] == "true"
-            user_id = cookies.signed[:user_id]
-            user = User.active.find_by_id(user_id)
+            begin
+              user_info = JSON.parse(cookies.signed[:user], symbolize_names: true)
+              key = user_info[:login]
+            rescue
+              key = ''
+            end
+            user = User.active.find_by_login(key)
             if user
               reset_session
               start_user_session(user)
-              logger.info "redmine_env_auth: reset session and autologin with cookie by user: #{user.id}"
+              logger.info "redmine_env_auth: reset session and autologin with cookie by user: #{user.login}, (id=#{user.id})"
             end
+            user
           end
         end
 
         if self.respond_to?(:alias_method_chain) # Rails < 5
-          alias_method_chain :session_expiration, :envauth
+          alias_method_chain :try_to_autologin, :envauth
         else # Rails >= 5
-          alias_method :session_expiration_without_envauth, :session_expiration
+          alias_method :try_to_autologin_without_envauth, :try_to_autologin
           prepend PrependMethods
         end
       end
